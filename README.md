@@ -1,3 +1,14 @@
+Steps to run this app:
+
+Go to project directory
+Run `npm install`
+Run `npm install -g json-server` to install json server
+Open a different terminal and run `json-server --watch db.json --port 3004` to run json server in that port
+Run `npm start`
+Open http://localhost:3000
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

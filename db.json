@@ -1,0 +1,14 @@
+{
+  "video": [
+    {
+      "id": 1,
+      "name": "chameleon bubbles",
+      "url": "https://www.youtube.com/embed/xn54TvpGu7E"
+    },
+    {
+      "id": 2,
+      "name": "TrailerHD",
+      "url": "https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
+    }
+  ]
+}

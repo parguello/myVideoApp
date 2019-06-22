@@ -1,11 +1,11 @@
-Steps to run this app:
+Steps to run this app:<br />
 
-Go to project directory
-Run `npm install`
-Run `npm install -g json-server` to install json server
-Open a different terminal and run `json-server --watch db.json --port 3004` to run json server in that port
-Run `npm start`
-Open http://localhost:3000
+Go to project directory <br />
+Run `npm install` <br />
+Run `npm install -g json-server` to install json server <br />
+Open a different terminal and run `json-server --watch db.json --port 3004` to run json server in that port<br />
+Run `npm start`<br />
+Open http://localhost:3000<br />
 
 ---
 

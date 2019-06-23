@@ -1,10 +1,17 @@
 import React, { Component } from "react";
 import "./videoList.css";
-import { Alert, Form, FormGroup, Input, Label, Button } from "reactstrap";
+import {
+  Alert,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Button,
+  Spinner
+} from "reactstrap";
 import { Container, Row, Col } from "reactstrap";
 import { VideoService } from "../services/VideoService";
 
-//var videoService = new VideoService();
 export class AddVideo extends Component {
   constructor() {
     super();
@@ -27,18 +34,18 @@ export class AddVideo extends Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    //this.setState({ loading: true });
   }
 
+  //Back to list page
   onBack() {
     this.props.history.push({
       pathname: `/`
     });
   }
 
+  //set state for name and url as user enters values
   handleInput = field => e => {
     let value = e.target.value;
-    //let name = e.target.name;
     this.setState(
       prevState => {
         return {
@@ -50,15 +57,28 @@ export class AddVideo extends Component {
       },
       () => {
         console.log("dataEdit", this.state.dataEdit);
+        //check if youtube video - change url to be embedded version
+        if (
+          field === "url" &&
+          value.indexOf("www.youtube.com/watch?v=") !== -1
+        ) {
+          let newValue = value.replace(
+            "www.youtube.com/watch?v=",
+            "www.youtube.com/embed/"
+          );
+          this.setState({
+            videoSelected: {
+              ...this.state.videoSelected,
+              url: newValue
+            }
+          });
+        }
       }
     );
   };
 
+  //call service to add video to database- error handling
   onAddVideoClick() {
-    //call update service
-    //fetch list
-
-    //new VideoService()
     this.videoService
       .createVideo(this.state.videoSelected)
       .then(res => {
@@ -76,11 +96,19 @@ export class AddVideo extends Component {
         });
       });
   }
+  //close message
   onDismiss() {
     this.setState({ visibleMessage: false });
   }
+
   render() {
-    return (
+    const spinner = (
+      <div>
+        <Spinner color="dark" />
+      </div>
+    );
+
+    const contentPage = (
       <div>
         <Alert
           color={this.state.colorMessage}
@@ -140,6 +168,12 @@ export class AddVideo extends Component {
             </Col>
           </Row>
         </Container>
+      </div>
+    );
+
+    return (
+      <div>
+        <div>{this.state.loading ? spinner : contentPage}</div>
       </div>
     );
   }

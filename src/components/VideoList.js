@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import "./videoList.css";
 import { VideoService } from "../services/VideoService";
-
-import { faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-
+import { faPlus, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Alert,
@@ -16,7 +13,8 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  Spinner
 } from "reactstrap";
 import { Container, Row, Col } from "reactstrap";
 
@@ -29,13 +27,12 @@ const videoArray = [
 ];
 
 export class VideoList extends Component {
-  //class VideoList extends Component {
   constructor() {
     super();
-    // this.
+
     this.state = {
       data: [],
-      //dataEdit: { id: "", name: "", url: "" },
+
       videoSelected: { id: "", name: "", url: "" },
       showEdit: false,
       showModalVideo: false,
@@ -49,6 +46,7 @@ export class VideoList extends Component {
       id: null
     };
 
+    //instantiate service
     this.videoService = new VideoService();
 
     this.fetchVideos = this.fetchVideos.bind(this);
@@ -68,28 +66,33 @@ export class VideoList extends Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
-    //this.setState({ loading: true });
 
+    //search for videos available in database
     this.fetchVideos();
   }
 
   //fetch list of videos -service
   fetchVideos() {
+    this.setState({ loading: true });
     this.videoService
       .getVideoList()
-      .then(data => this.setState({ data: data }))
+      .then(data => {
+        this.setState({ data: data, loading: false });
+      })
       .catch(error => {
         console.log(error);
-        this.setState({ data: videoArray }); //Mock data
+        this.setState({ data: videoArray, loading: false }); //Mock data
       });
   }
 
+  //redirect to add new video page
   onAddVideoClick(event) {
     this.props.history.push({
       pathname: `/addVideo`
     });
   }
 
+  //clicking on edit icon will open a modal with video details
   onEditVideoClick(event, index) {
     var dataList = this.state.data;
     this.setState({ videoSelected: dataList[index] });
@@ -97,12 +100,15 @@ export class VideoList extends Component {
     this.setState({ showEdit: true });
   }
 
+  //clicking on delete icon will open a modal window asking for confirmation
   onDeleteVideoClick(event, index) {
     var dataList = this.state.data;
     this.setState({ videoSelected: dataList[index] });
 
     this.setState({ showConfirm: true });
   }
+
+  //when user confirms in modal page - it calls delete service
   onDeleteVideoConfirmed() {
     //call delete api
 
@@ -124,31 +130,38 @@ export class VideoList extends Component {
         });
       });
 
+    //close modal
     this.setState({ showConfirm: false });
   }
 
+  //close edit modal
   onHandleClose() {
     this.setState({ showEdit: false });
   }
 
+  //show edit modal
   handleShow() {
     this.setState({ showEdit: true });
   }
+
+  //manage open/close status edit modal
   toggle() {
     this.setState(prevState => ({
       showEdit: !prevState.showEdit
     }));
   }
 
+  //manage open/close status delete confirm modal
   toggleConfirm() {
     this.setState(prevState => ({
       showConfirm: !prevState.showConfirm
     }));
   }
 
+  //manage input status when user enters video details
   handleInput = field => e => {
     let value = e.target.value;
-    //let name = e.target.name;
+
     this.setState(
       prevState => {
         return {
@@ -164,6 +177,7 @@ export class VideoList extends Component {
     );
   };
 
+  //Update video details
   onUpdateVideoClick() {
     //call update service
     this.videoService
@@ -183,8 +197,12 @@ export class VideoList extends Component {
           message: "Video update failed"
         });
       });
+
+    //close modal
+    this.setState({ showEdit: false });
   }
 
+  //open modal to display and reproduce video when user selects url link
   showVideo(e, url) {
     e.stopPropagation();
     e.preventDefault();
@@ -192,27 +210,22 @@ export class VideoList extends Component {
     this.setState({ showModalVideo: true, showUrl: url });
   }
 
+  //manage open/close status for video modal
   toggleShowVideo() {
     this.setState(prevState => ({
       showModalVideo: !prevState.showModalVideo
     }));
   }
 
+  //close success/failure messages
   onDismiss() {
     this.setState({ visibleMessage: false });
   }
 
   render() {
     const spinner = (
-      <div className="splash-screen">
-        <div className="splash-container">
-          <div className="logo" />
-          <div className="load-bar">
-            <div className="bar" />
-            <div className="bar" />
-            <div className="bar" />
-          </div>
-        </div>
+      <div>
+        <Spinner color="dark" />
       </div>
     );
 
@@ -228,7 +241,7 @@ export class VideoList extends Component {
           </Alert>
           <Container>
             <Row>
-              <Col md="12" md={{ size: 12, offset: 0 }}>
+              <Col md={{ size: 12, offset: 0 }}>
                 <div className="float-right">
                   <button
                     id="addVideo"
@@ -237,7 +250,7 @@ export class VideoList extends Component {
                     onClick={this.onAddVideoClick}
                   >
                     <FontAwesomeIcon icon={faPlus} />
-                    Add Video
+                    <span> </span>Add Video
                   </button>
                 </div>
 

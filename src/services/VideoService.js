@@ -1,9 +1,10 @@
 import axios from "axios";
-const API_URL = "http://localhost:3004";
+const API_URL = "http://localhost:8080/VideoServerApp"; //"http://localhost:3004";
 
 export class VideoService {
   getVideoList() {
     const url = `${API_URL}/video/`;
+    //return axios.get(url).then(response => response.data);
     return axios.get(url).then(response => response.data);
   }
 
@@ -23,6 +24,7 @@ export class VideoService {
   }
 
   deleteVideo(video) {
+    console.log("video", video);
     const url = `${API_URL}/video/${video.id}`;
     return axios.delete(url);
   }

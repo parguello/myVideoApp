@@ -96,6 +96,7 @@ export class VideoList extends Component {
   onEditVideoClick(event, index) {
     var dataList = this.state.data;
     this.setState({ videoSelected: dataList[index] });
+    console.log("Video selected", this.state.videoSelected);
 
     this.setState({ showEdit: true });
   }
